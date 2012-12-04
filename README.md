@@ -1,6 +1,8 @@
 #Spring JNDI Annotation [![Build Status](https://secure.travis-ci.org/ryantenney/spring-jndi-annotation.png)](http://travis-ci.org/ryantenney/spring-jndi-annotation)
 =================================
 
+##Annotation-driven injection of JNDI values into Spring Beans
+
 ###Maven
 
 ```xml
