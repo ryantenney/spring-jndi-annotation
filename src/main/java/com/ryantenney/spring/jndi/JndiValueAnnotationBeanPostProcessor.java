@@ -1,15 +1,10 @@
 package com.ryantenney.spring.jndi;
 
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
@@ -19,8 +14,6 @@ import org.springframework.jndi.JndiLocatorSupport;
 import static org.springframework.util.ReflectionUtils.*;
 
 public class JndiValueAnnotationBeanPostProcessor extends JndiLocatorSupport implements BeanPostProcessor, PriorityOrdered {
-
-	private static final Logger log = LoggerFactory.getLogger(JndiValueAnnotationBeanPostProcessor.class);
 
 	private int order = Ordered.LOWEST_PRECEDENCE - 2;
 

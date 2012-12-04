@@ -1,7 +1,5 @@
 package com.ryantenney.spring.jndi;
 
-import java.net.URL;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

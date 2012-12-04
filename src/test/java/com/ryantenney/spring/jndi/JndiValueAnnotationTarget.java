@@ -1,7 +1,5 @@
 package com.ryantenney.spring.jndi;
 
-import java.net.URL;
-
 public class JndiValueAnnotationTarget {
 
 	/**
