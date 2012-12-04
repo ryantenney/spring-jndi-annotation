@@ -3,7 +3,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.ryantenney</groupId>
+	<groupId>com.ryantenney.spring</groupId>
 	<artifactId>spring-jndi-annotation</artifactId>
 	<packaging>jar</packaging>
 	<version>0.1.0-SNAPSHOT</version>

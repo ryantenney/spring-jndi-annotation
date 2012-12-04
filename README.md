@@ -13,7 +13,7 @@
 </repository>
 
 <dependency>
-	<groupId>com.ryantenney</groupId>
+	<groupId>com.ryantenney.spring</groupId>
 	<artifactId>spring-jndi-annotation</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 </dependency>
