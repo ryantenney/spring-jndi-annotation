@@ -1,4 +1,4 @@
-#Spring @JNDI Annotation [![Build Status](https://secure.travis-ci.org/ryantenney/spring-jndi-annotation.png)](http://travis-ci.org/ryantenney/spring-jndi-annotation)
+#Spring JNDI Annotation [![Build Status](https://secure.travis-ci.org/ryantenney/spring-jndi-annotation.png)](http://travis-ci.org/ryantenney/spring-jndi-annotation)
 =================================
 
 ###Maven
@@ -21,7 +21,23 @@
 
 ###Basic Usage
 
-Coming soon.
+Include in your application context:
+
+```xml
+<bean class="com.ryantenney.spring.jndi.JndiValueAnnotationBeanPostProcessor" />
+```
+
+And annotate away:
+
+```java
+@Component
+public class SpringBean {
+
+	@JndiValue("foo")
+	private String bar;
+
+}
+```
 
 ---
 
