@@ -6,7 +6,7 @@
 	<groupId>com.ryantenney</groupId>
 	<artifactId>spring-jndi-annotation</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<name>spring-jndi-annotation</name>
 	<description>Annotation-driven injection of JNDI values into Spring Beans</description>
 	<url>http://githbu.com/ryantenney/spring-jndi-annotation/</url>
