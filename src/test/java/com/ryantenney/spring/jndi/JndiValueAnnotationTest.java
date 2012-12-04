@@ -15,13 +15,11 @@ public class JndiValueAnnotationTest {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
-				InitialContextFactoryForTest.class.getName());
+		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, InitialContextFactoryForTest.class.getName());
 
 		InitialContext ctx = new InitialContext();
 		ctx.bind("asdf", "ASDF");
 		ctx.bind("qwerty", "QWERTY");
-		ctx.bind("a/url", "http://google.com/");
 	}
 
 	@Test
@@ -30,8 +28,6 @@ public class JndiValueAnnotationTest {
 		JndiValueAnnotationTarget target = (JndiValueAnnotationTarget) ctx.getBean("targetBean");
 		assertEquals("ASDF", target.getAsdf());
 		assertEquals("QWERTY", target.getQwerty());
-		assertTrue(target.url instanceof URL);
-		assertEquals("http://google.com/", target.url.toString());
 	}
 
 }

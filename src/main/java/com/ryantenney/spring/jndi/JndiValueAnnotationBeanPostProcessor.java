@@ -11,61 +11,56 @@ import javax.naming.NamingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.TypeConverter;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.PriorityOrdered;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ReflectionUtils.FieldCallback;
-import org.springframework.util.ReflectionUtils.MethodCallback;
+import org.springframework.jndi.JndiLocatorSupport;
 
-public class JndiValueAnnotationBeanPostProcessor implements BeanPostProcessor, BeanFactoryAware, PriorityOrdered {
+import static org.springframework.util.ReflectionUtils.*;
+
+public class JndiValueAnnotationBeanPostProcessor extends JndiLocatorSupport implements BeanPostProcessor, PriorityOrdered {
 
 	private static final Logger log = LoggerFactory.getLogger(JndiValueAnnotationBeanPostProcessor.class);
 
-	private static final int ORDER = Ordered.LOWEST_PRECEDENCE - 2;
-
-	private TypeConverter typeConverter;
-	private InitialContext ctx;
-
-	public JndiValueAnnotationBeanPostProcessor() throws NamingException {
-		this.ctx = new InitialContext();
-	}
+	private int order = Ordered.LOWEST_PRECEDENCE - 2;
 
 	@Override
 	public Object postProcessBeforeInitialization(final Object bean, final String beanName) throws BeansException {
-		ReflectionUtils.doWithFields(bean.getClass(), new FieldCallback() {
+		Class<?> targetClass = bean.getClass();
+
+		doWithFields(targetClass, new FieldCallback() {
 			@Override
 			public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
 				JndiValue ann = field.getAnnotation(JndiValue.class);
 				if (ann != null) {
 					Object value = lookup(ann.value(), field.getType());
-					setAccessible(field);
-					field.set(bean, value);
+					makeAccessible(field);
+					setField(field, bean, value);
 				}
 			}
-		});
+		}, COPYABLE_FIELDS);
 
-		ReflectionUtils.doWithMethods(bean.getClass(), new MethodCallback() {
+		doWithMethods(targetClass, new MethodCallback() {
 			@Override
 			public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
 				JndiValue ann = method.getAnnotation(JndiValue.class);
 				if (ann != null) {
-					try {
-						Object value = lookup(ann.value(), method.getParameterTypes()[0]);
-						setAccessible(method);
-						method.invoke(bean, value);
-					} catch (InvocationTargetException e) {
-						throw new RuntimeException(e);
-					}
+					Object value = lookup(ann.value(), method.getParameterTypes()[0]);
+					makeAccessible(method);
+					invokeMethod(method, bean, value);
 				}
 			}
-		});
+		}, USER_DECLARED_METHODS);
 
 		return bean;
+	}
+
+	protected <T> T lookup(String jndiName, Class<T> requiredType) {
+		try {
+			return super.lookup(jndiName, requiredType);
+		} catch (NamingException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	@Override
@@ -74,32 +69,12 @@ public class JndiValueAnnotationBeanPostProcessor implements BeanPostProcessor, 
 	}
 
 	@Override
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		if (!(beanFactory instanceof ConfigurableListableBeanFactory)) {
-			throw new IllegalArgumentException("Requires ConfigurableListableBeanFactory");
-		}
-
-		this.typeConverter = ((ConfigurableListableBeanFactory) beanFactory).getTypeConverter();
-	}
-
-	@Override
 	public int getOrder() {
-		return ORDER;
+		return order;
 	}
 
-	private <T> T lookup(String name, Class<T> type) {
-		try {
-			Object value = ctx.lookup(name);
-			return typeConverter.convertIfNecessary(value, type);
-		} catch (NamingException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private void setAccessible(AccessibleObject ao) {
-		if (!ao.isAccessible()) {
-			ao.setAccessible(true);
-		}
+	public void setOrder(final int order) {
+		this.order = order;
 	}
 
 }

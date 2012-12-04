@@ -28,10 +28,4 @@ public class JndiValueAnnotationTarget {
 		return this.qwerty;
 	}
 
-	/**
-	 * Test injection and type conversion
-	 */
-	@JndiValue("a/url")
-	public URL url;
-
 }
