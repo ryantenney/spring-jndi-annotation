@@ -15,7 +15,7 @@
 <dependency>
 	<groupId>com.ryantenney</groupId>
 	<artifactId>spring-jndi-annotation</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 </dependency>
 ```
 
