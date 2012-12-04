@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Spring JNDI Annotation by ryantenney</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/ryantenney/spring-jndi-annotation">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/ryantenney/spring-jndi-annotation/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/ryantenney/spring-jndi-annotation/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Spring JNDI Annotation</h1>
+          <p>Autowire in values from JNDI</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/ryantenney">ryantenney</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>Spring JNDI Annotation <a href="http://travis-ci.org/ryantenney/spring-jndi-annotation"><img src="https://secure.travis-ci.org/ryantenney/spring-jndi-annotation.png" alt="Build Status"></a>
+</h1>
+
+<h1></h1>
+
+<h3>Maven</h3>
+
+<div class="highlight"><pre><span class="nt">&lt;repository&gt;</span>
+    <span class="nt">&lt;id&gt;</span>sonatype-oss-public<span class="nt">&lt;/id&gt;</span>
+    <span class="nt">&lt;url&gt;</span>https://oss.sonatype.org/content/groups/public/<span class="nt">&lt;/url&gt;</span>
+    <span class="nt">&lt;snapshots&gt;</span>
+        <span class="nt">&lt;enabled&gt;</span>true<span class="nt">&lt;/enabled&gt;</span>
+    <span class="nt">&lt;/snapshots&gt;</span>
+<span class="nt">&lt;/repository&gt;</span>
+
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>com.ryantenney<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>spring-jndi-annotation<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>0.1.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+<h3>Basic Usage</h3>
+
+<p>Include in your application context:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"com.ryantenney.spring.jndi.JndiValueAnnotationBeanPostProcessor"</span> <span class="nt">/&gt;</span>
+</pre></div>
+
+<p>And annotate away:</p>
+
+<div class="highlight"><pre><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpringBean</span> <span class="o">{</span>
+
+    <span class="nd">@JndiValue</span><span class="o">(</span><span class="s">"foo"</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">bar</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+
+<hr><h3>License</h3>
+
+<p>Copyright (c) 2012 Ryan Tenney</p>
+
+<p>Published under Apache Software License 2.0, see LICENSE</p>
+
+<p><a href="http://rochestermade.com"><img src="http://rochestermade.com/media/images/rochester-made-light-on-dark.png" alt="Rochester Made"></a></p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
