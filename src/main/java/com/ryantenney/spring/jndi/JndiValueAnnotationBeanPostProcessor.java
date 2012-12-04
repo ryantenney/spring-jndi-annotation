@@ -26,9 +26,12 @@ public class JndiValueAnnotationBeanPostProcessor extends JndiLocatorSupport imp
 			public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
 				JndiValue ann = field.getAnnotation(JndiValue.class);
 				if (ann != null) {
-					Object value = lookup(ann.value(), field.getType());
-					makeAccessible(field);
-					setField(field, bean, value);
+					Class<?> requiredType = field.getType();
+					Object value = lookup(ann, requiredType);
+					if (value != null) {
+						makeAccessible(field);
+						setField(field, bean, value);
+					}
 				}
 			}
 		}, COPYABLE_FIELDS);
@@ -38,9 +41,12 @@ public class JndiValueAnnotationBeanPostProcessor extends JndiLocatorSupport imp
 			public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
 				JndiValue ann = method.getAnnotation(JndiValue.class);
 				if (ann != null) {
-					Object value = lookup(ann.value(), method.getParameterTypes()[0]);
-					makeAccessible(method);
-					invokeMethod(method, bean, value);
+					Class<?> requiredType = method.getParameterTypes()[0];
+					Object value = lookup(ann, requiredType);
+					if (value != null) {
+						makeAccessible(method);
+						invokeMethod(method, bean, value);
+					}
 				}
 			}
 		}, USER_DECLARED_METHODS);
@@ -48,11 +54,19 @@ public class JndiValueAnnotationBeanPostProcessor extends JndiLocatorSupport imp
 		return bean;
 	}
 
-	protected <T> T lookup(String jndiName, Class<T> requiredType) {
+	protected <T> T lookup(JndiValue ann, Class<T> requiredType) {
 		try {
-			return super.lookup(jndiName, requiredType);
+			return super.lookup(ann.value(), requiredType);
 		} catch (NamingException ex) {
-			throw new RuntimeException(ex);
+			if (ann.required()) {
+				logger.debug("Object not found for required @JndiValue with name [" + ann.value() + "]");
+				throw new RuntimeException(ex);
+			} else {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Object not found for optional @JndiValue with name [" + ann.value() + "]");
+				}
+				return null;
+			}
 		}
 	}
 

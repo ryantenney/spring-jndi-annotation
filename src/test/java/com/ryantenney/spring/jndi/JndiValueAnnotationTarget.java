@@ -26,4 +26,18 @@ public class JndiValueAnnotationTarget {
 		return this.qwerty;
 	}
 
+	private Object nothing;
+
+	/**
+	 * Tests required=false
+	 */
+	@JndiValue(value="nothing", required=false)
+	public void setNothing(final Object nothing) {
+		this.nothing = nothing;
+	}
+
+	public Object getNothing() {
+		return this.nothing;
+	}
+
 }

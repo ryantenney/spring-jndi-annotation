@@ -26,6 +26,7 @@ public class JndiValueAnnotationTest {
 		JndiValueAnnotationTarget target = (JndiValueAnnotationTarget) ctx.getBean("targetBean");
 		assertEquals("ASDF", target.getAsdf());
 		assertEquals("QWERTY", target.getQwerty());
+		assertNull(target.getNothing());
 	}
 
 }

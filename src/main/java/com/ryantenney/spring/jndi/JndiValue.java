@@ -11,5 +11,6 @@ public @interface JndiValue {
 
 	String value();
 	Class<?> type() default Object.class;
+	boolean required() default true;
 
 }
