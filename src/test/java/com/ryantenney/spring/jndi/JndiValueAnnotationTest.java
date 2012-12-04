@@ -18,15 +18,21 @@ public class JndiValueAnnotationTest {
 		InitialContext ctx = new InitialContext();
 		ctx.bind("asdf", "ASDF");
 		ctx.bind("qwerty", "QWERTY");
+		ctx.bind("url", "http://google.com");
 	}
 
 	@Test
 	public void test() throws Exception {
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:test-context.xml");
 		JndiValueAnnotationTarget target = (JndiValueAnnotationTarget) ctx.getBean("targetBean");
+
 		assertEquals("ASDF", target.getAsdf());
 		assertEquals("QWERTY", target.getQwerty());
+
 		assertNull(target.getNothing());
+
+		assertNotNull(target.getUrl());
+		assertEquals("http://google.com", target.getUrl().toString());
 	}
 
 }

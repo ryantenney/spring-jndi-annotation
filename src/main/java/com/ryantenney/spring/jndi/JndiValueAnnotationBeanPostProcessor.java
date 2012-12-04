@@ -1,21 +1,40 @@
 package com.ryantenney.spring.jndi;
 
+import static org.springframework.util.ReflectionUtils.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import javax.naming.NamingException;
-
 import org.springframework.beans.BeansException;
+import org.springframework.beans.TypeConverter;
+import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.core.MethodParameter;
 import org.springframework.core.Ordered;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.jndi.JndiLocatorSupport;
+import org.springframework.util.ReflectionUtils.FieldCallback;
+import org.springframework.util.ReflectionUtils.MethodCallback;
 
-import static org.springframework.util.ReflectionUtils.*;
-
-public class JndiValueAnnotationBeanPostProcessor extends JndiLocatorSupport implements BeanPostProcessor, PriorityOrdered {
+public class JndiValueAnnotationBeanPostProcessor extends JndiLocatorSupport implements BeanPostProcessor, BeanFactoryAware, PriorityOrdered {
 
 	private int order = Ordered.LOWEST_PRECEDENCE - 2;
+
+	private TypeConverter typeConverter;
+
+	@Override
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+		if (beanFactory instanceof ConfigurableBeanFactory) {
+			typeConverter = ((ConfigurableBeanFactory) beanFactory).getTypeConverter();
+		}
+
+		if (typeConverter == null && logger.isInfoEnabled()) {
+			logger.info("Unable to obtain a TypeConverter, will attempt to make do without one");
+		}
+	}
 
 	@Override
 	public Object postProcessBeforeInitialization(final Object bean, final String beanName) throws BeansException {
@@ -41,7 +60,8 @@ public class JndiValueAnnotationBeanPostProcessor extends JndiLocatorSupport imp
 			public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
 				JndiValue ann = method.getAnnotation(JndiValue.class);
 				if (ann != null) {
-					Class<?> requiredType = method.getParameterTypes()[0];
+					MethodParameter param = MethodParameter.forMethodOrConstructor(method, 0);
+					Class<?> requiredType = param.getParameterType();
 					Object value = lookup(ann, requiredType);
 					if (value != null) {
 						makeAccessible(method);
@@ -55,18 +75,32 @@ public class JndiValueAnnotationBeanPostProcessor extends JndiLocatorSupport imp
 	}
 
 	protected <T> T lookup(JndiValue ann, Class<T> requiredType) {
+		return lookup(ann, requiredType, null);
+	}
+
+	protected <T> T lookup(JndiValue ann, Class<T> requiredType, MethodParameter param) {
 		try {
-			return super.lookup(ann.value(), requiredType);
-		} catch (NamingException ex) {
+			Object value = super.lookup(ann.value());
+
+			if (typeConverter != null) {
+				return typeConverter.convertIfNecessary(value, requiredType, param);
+			} else {
+				if (requiredType.isInstance(value)) {
+					return requiredType.cast(value);
+				} else {
+					throw new TypeMismatchException(value, requiredType);
+				}
+			}
+		} catch (Exception ex) {
 			if (ann.required()) {
-				logger.debug("Object not found for required @JndiValue with name [" + ann.value() + "]");
-				throw new RuntimeException(ex);
+				logger.error("Object not found for required @JndiValue with name [" + ann.value() + "]");
+				rethrowRuntimeException(ex);
 			} else {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Object not found for optional @JndiValue with name [" + ann.value() + "]");
 				}
-				return null;
 			}
+			return null;
 		}
 	}
 

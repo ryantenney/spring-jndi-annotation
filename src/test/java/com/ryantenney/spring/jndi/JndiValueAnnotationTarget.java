@@ -1,6 +1,9 @@
 package com.ryantenney.spring.jndi;
 
+import java.net.URL;
+
 public class JndiValueAnnotationTarget {
+
 
 	/**
 	 * Tests private field injection
@@ -12,11 +15,13 @@ public class JndiValueAnnotationTarget {
 		return this.asdf;
 	}
 
-	private String qwerty;
 
 	/**
 	 * Tests setter injection
 	 */
+
+	private String qwerty;
+
 	@JndiValue("qwerty")
 	public void setQwerty(final String qwerty) {
 		this.qwerty = qwerty;
@@ -26,11 +31,12 @@ public class JndiValueAnnotationTarget {
 		return this.qwerty;
 	}
 
-	private Object nothing;
-
 	/**
 	 * Tests required=false
 	 */
+
+	private Object nothing;
+
 	@JndiValue(value="nothing", required=false)
 	public void setNothing(final Object nothing) {
 		this.nothing = nothing;
@@ -38,6 +44,22 @@ public class JndiValueAnnotationTarget {
 
 	public Object getNothing() {
 		return this.nothing;
+	}
+
+
+	/**
+	 * Tests type conversion
+	 */
+
+	private URL url;
+
+	@JndiValue("url")
+	public void setUrl(URL url) {
+		this.url = url;
+	}
+
+	public URL getUrl() {
+		return url;
 	}
 
 }
